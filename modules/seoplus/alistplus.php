@@ -25,16 +25,24 @@ class aListPlus extends aListPlus_parent
             }
         }
 
+        $oxtitleSuffix = '';
         if ($this->getActCategory()->oxcategories__oxshowsuffix->value) {
-            $sSuffix .= ' ' . $this->getConfig()->getActiveShop()->oxshops__oxtitlesuffix->value;
+            $oxtitleSuffix = ' ' . $this->getConfig()->getActiveShop()->oxshops__oxtitlesuffix->value;
         }
+        
+        $sSuffix = $this->truncateRespectWords($sSuffix, 200 - strlen($oxtitleSuffix)) . $oxtitleSuffix;
 
         if ($sSuffix == '') {
             $sSuffix = null;
-        } else {
-            $sSuffix = substr($sSuffix, 0, 200);
         }
 
         return $sSuffix;
+    }
+    
+    private function truncateRespectWords($text, $length) {
+        if(strlen($text) > $length) {
+           $text = preg_replace("/^(.{1,$length})(\s.*|$)/s", '\\1', $text);
+        }
+        return($text);
     }
 }
